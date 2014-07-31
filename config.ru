@@ -2,4 +2,4 @@
 
 require_relative 'app'
 
-run TennisConnector::App
+run CruchotHq::App
