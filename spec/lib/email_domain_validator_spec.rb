@@ -6,16 +6,18 @@ describe EmailDomainValidator do
 
   subject { described_class.new(email) }
 
-  describe "#valid?" do
+  describe "#valid? & #invalid?" do
     it "returns true when domain valid" do
       validator = described_class.new('bob@gmail.com')
       expect(validator.valid?).to eql true
+      expect(validator.invalid?).to eql false
       expect(validator.errors).to be_empty
     end
 
     it "returns false when domain invalid" do
       validator = described_class.new('bob@invaliddomain.com')
       expect(validator.valid?).to eql false
+      expect(validator.invalid?).to eql true
       expect(validator.errors.size).to eql 1
       expect(validator.errors).to match_array ['invalid email domain']
     end

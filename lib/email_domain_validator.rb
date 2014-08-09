@@ -15,6 +15,10 @@ class EmailDomainValidator
     errors.empty?
   end
 
+  def invalid?
+    !valid?
+  end
+
   private 
 
   # credit is due at https://gist.github.com/brianjlandau/da0bab27dcf1d8691f6e

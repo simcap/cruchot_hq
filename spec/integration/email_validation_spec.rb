@@ -22,7 +22,7 @@ describe "Email validation" do
   it "returns 400 with error message for invalid email syntax" do
     %w(invalid@mail @mail.com invalid invalid@.com).each do |email|
       get '/email/validation', email: email
-      expect(last_response.status).to eql 400
+      expect(last_response.status).to eql 202
       expect(json_body['email']).to eql email
       expect(json_body['status']).to eql 'error'
       expect(json_body['message']).to match /incorrect email syntax/i 
@@ -32,7 +32,7 @@ describe "Email validation" do
   it "returns 400 with error message for invalid email domain" do
     email = 'invalid@il.com'
     get '/email/validation', email: email
-    expect(last_response.status).to eql 400
+    expect(last_response.status).to eql 202
     expect(json_body['email']).to eql email
     expect(json_body['status']).to eql 'error'
     expect(json_body['message']).to match /invalid email domain/i 

@@ -13,31 +13,28 @@ module CruchotHq
     EMAIL = /^([\w\.%\+\-]+)@([\w\-]+\.)+([\w]{2,})$/i
 
     get '/email/validation' do
-      if !email_syntax_validator.valid?
-        status 400
-        body json_body(email_syntax_validator.errors)
-      elsif !email_domain_validator.valid?
-        status 400
-        body json_body(email_domain_validator.errors)
+      if email_syntax.invalid?
+        json_response(email_syntax.errors)
+      elsif email_domain.invalid?
+        json_response(email_domain.errors)
       else
-        status 200
-        body json_body []
+        json_response 
       end
     end
 
-    def json_body(errors)
+    def json_response(errors = []) 
       if errors.empty?
-        {email: params[:email], status: 'ok'}.to_json
+        [200, {email: params[:email], status: 'ok'}.to_json]
       else
-        {email: params[:email], status: 'error', message: errors.first}.to_json
+        [202, {email: params[:email], status: 'error', message: errors.first}.to_json]
       end 
     end
 
-    def email_syntax_validator
+    def email_syntax
       @syntax_validator ||= EmailSyntaxValidator.new(params[:email]) 
     end
 
-    def email_domain_validator
+    def email_domain
       @domain_validator ||= EmailDomainValidator.new(params[:email]) 
     end
 
