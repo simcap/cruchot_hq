@@ -5,7 +5,7 @@ require 'redis'
 require_relative 'lib/validators'
 
 module CruchotHq
-  class App < Sinatra::Application
+  class Api < Sinatra::Application
   
     before do
       content_type 'application/json'
@@ -13,7 +13,7 @@ module CruchotHq
 
     EMAIL = /^([\w\.%\+\-]+)@([\w\-]+\.)+([\w]{2,})$/i
 
-    get '/email/validation' do
+    get '/validation' do
       if email_syntax.invalid?
         json_response(email_syntax.errors)
       elsif email_domain.invalid?

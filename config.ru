@@ -1,5 +1,7 @@
 #\ -s puma
 
-require_relative 'app'
+require_relative 'api'
 
-run CruchotHq::App
+map '/api' do
+  run CruchotHq::Api
+end
