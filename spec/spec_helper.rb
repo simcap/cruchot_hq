@@ -2,7 +2,6 @@ ENV['RACK_ENV'] = 'test'
 
 require 'rack/test'
 require 'pry'
-
 require 'redis'
 
 REDIS = Redis.new
@@ -11,7 +10,6 @@ TEST_AUTH_TOKEN = '3456dfgh6789090uiygf'
 ENV[TEST_AUTH_TOKEN] = 'cruchot_spec'
 
 RSpec.configure do |config|
-
   config.before(:each, clear_redis: true) do
     clear_redis!
   end
