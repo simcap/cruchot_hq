@@ -3,10 +3,13 @@ require 'json'
 require 'redis'
 
 require_relative 'lib/validators'
+require_relative 'lib/token_authentication'
 
 module CruchotHq
   class Api < Sinatra::Application
   
+    use TokenAuthentication 
+
     before do
       content_type 'application/json'
     end
