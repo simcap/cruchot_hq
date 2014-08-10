@@ -1,17 +1,17 @@
 require 'resolv'
 
-class EmailDomainValidator
+class BaseValidator
 
-  attr_reader :errors, :email
+  attr_reader :subject, :errors
 
-  def initialize(email)
-    @email = email
+  def initialize(subject)
+    @subject = subject
     @errors = []
   end
 
   def valid?
     errors.clear
-    validate 
+    validate_subject
     errors.empty?
   end
 
@@ -19,10 +19,26 @@ class EmailDomainValidator
     !valid?
   end
 
+end
+
+class EmailSyntaxValidator < BaseValidator
+
+  EMAIL_REGEX = /^([\w\.%\+\-]+)@([\w\-]+\.)+([\w]{2,})$/i
+
+  private 
+
+  def validate_subject
+    errors << 'incorrect email syntax' if EMAIL_REGEX  !~ subject
+  end
+
+end
+
+class EmailDomainValidator < BaseValidator
+
   private 
 
   # credit is due at https://gist.github.com/brianjlandau/da0bab27dcf1d8691f6e
-  def validate
+  def validate_subject
     if Resolv::DNS.new.getresources(domain, Resolv::DNS::Resource::IN::MX).empty?
       errors << 'invalid email domain'
     end
@@ -31,7 +47,7 @@ class EmailDomainValidator
   end
 
   def domain
-    @domain ||= email.split('@').last
+    @domain ||= subject.split('@').last
   end
 
 end

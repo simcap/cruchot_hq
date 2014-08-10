@@ -1,7 +1,6 @@
 require 'sinatra'
 require 'json'
-require_relative 'lib/email_syntax_validator'
-require_relative 'lib/email_domain_validator'
+require_relative 'lib/validators'
 
 module CruchotHq
   class App < Sinatra::Application
