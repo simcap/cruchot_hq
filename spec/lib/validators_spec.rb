@@ -1,47 +1,50 @@
 require 'validators'
 
-describe EmailSyntaxValidator do
-
-  let(:email) { 'valid@email.com' } 
+shared_examples "a validator" do
 
   subject { described_class.new(email) }
 
   describe "#valid? & #invalid?" do
     it "is idempotent" do
-      validator = described_class.new('invalid@mail')
-      expect(validator.valid?).to eql false
-      expect(validator.errors.size).to eql 1
-      expect(validator.invalid?).to eql true
-      expect(validator.errors.size).to eql 1
-      expect(validator.valid?).to eql false
-      expect(validator.errors.size).to eql 1
-      expect(validator.invalid?).to eql true
-      expect(validator.errors.size).to eql 1
-    end
-
-    it "returns true when email valid" do
-      validator = described_class.new('valid@mail.com')
-      expect(validator.valid?).to eql true
-      expect(validator.invalid?).to eql false
+      expect(subject.valid?).to eql false
+      expect(subject.errors.size).to eql 1
+      expect(subject.invalid?).to eql true
+      expect(subject.errors.size).to eql 1
+      expect(subject.valid?).to eql false
+      expect(subject.errors.size).to eql 1
+      expect(subject.invalid?).to eql true
+      expect(subject.errors.size).to eql 1
     end
   end
+end
 
-  describe "Incorrect email syntax" do
-    it "populates with error invalid syntax" do
+describe EmailSyntaxValidator do
+
+  let(:email) { 'invalid@mail' }
+  it_behaves_like "a validator"
+
+  describe "#valid? & #invalid?" do
+    it "returns false when syntax invalid" do
       validator = described_class.new('invalid@mail')
       expect(validator.valid?).to eql false
       expect(validator.invalid?).to eql true
       expect(validator.errors.size).to eql 1
       expect(validator.errors).to match_array ['incorrect email syntax']
     end
+
+    it "returns true when syntax valid" do
+      validator = described_class.new('valid@mail.com')
+      expect(validator.valid?).to eql true
+      expect(validator.invalid?).to eql false
+      expect(validator.errors.size).to eql 0
+    end
   end
 end
 
 describe EmailDomainValidator do
 
-  let(:email) { 'valid@email.com' } 
-
-  subject { described_class.new(email) }
+  let(:email) { 'invalid@invaliddomain.com' }
+  it_behaves_like "a validator"
 
   describe "#valid? & #invalid?" do
     it "returns true when domain valid" do
