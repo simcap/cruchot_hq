@@ -39,15 +39,38 @@ class EmailDomainValidator < BaseValidator
 
   # credit is due at https://gist.github.com/brianjlandau/da0bab27dcf1d8691f6e
   def validate_subject
-    if Resolv::DNS.new.getresources(domain, Resolv::DNS::Resource::IN::MX).empty?
-      errors << 'invalid email domain'
-    end
-  rescue Resolv::ResolvError, Resolv::ResolvTimeout
-      errors << 'invalid email domain'
+    errors << 'invalid email domain' unless domain_valid?
   end
 
   def domain
     @domain ||= subject.split('@').last
+  end
+
+  def redis
+    @redis ||= Redis.new
+  end
+
+  def domain_valid?
+    if redis.sismember(:valid_email_domains, domain)
+      true
+    elsif redis.sismember(:invalid_email_domains, domain)
+      false
+    else
+      perform_dns_query!
+    end
+  end
+
+  def perform_dns_query!
+    if Resolv::DNS.new.getresources(domain, Resolv::DNS::Resource::IN::MX).empty?
+      redis.sadd(:invalid_email_domains, domain)
+      false 
+    else
+      redis.sadd(:valid_email_domains, domain)
+      true
+    end
+  rescue Resolv::ResolvError, Resolv::ResolvTimeout
+    redis.sadd(:invalid_email_domains, domain)
+    false
   end
 
 end

@@ -4,6 +4,7 @@ ruby '2.1.2'
 
 gem 'sinatra'
 gem 'puma'
+gem 'redis'
 
 group :test do
   gem 'rspec'

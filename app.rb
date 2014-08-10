@@ -1,5 +1,7 @@
 require 'sinatra'
 require 'json'
+require 'redis'
+
 require_relative 'lib/validators'
 
 module CruchotHq
