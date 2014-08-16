@@ -14,7 +14,8 @@ RUN cd /root/src/ruby-2.1.2; ./configure; make install
 RUN gem update --system
 RUN gem install bundler
 
-RUN cd /root; git clone https://github.com/simcap/cruchot_hq
+RUN mkdir /root/cruchot_hq
+ADD . /root/cruchot_hq/
 
 WORKDIR /root/cruchot_hq
 RUN bundle install
